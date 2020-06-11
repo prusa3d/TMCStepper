@@ -967,6 +967,10 @@ class TMC2208Stepper : public TMCStepper {
 		uint16_t bytesWritten = 0;
 		float Rsense = 0.11;
 		bool CRCerror = false;
+
+		//Need for read/write TMC reg via g-code in public section
+		void write(uint8_t, uint32_t);
+		uint32_t read(uint8_t);
 	protected:
 		INIT2208_REGISTER(GCONF)			{{.sr=0}};
 		INIT_REGISTER(SLAVECONF)			{{.sr=0}};
@@ -993,15 +997,13 @@ class TMC2208Stepper : public TMCStepper {
       	    SSwitch *sswitch = NULL;
     	#endif
 
-		void write(uint8_t, uint32_t);
-		uint32_t read(uint8_t);
 		const uint8_t slave_address;
 		uint8_t calcCRC(uint8_t datagram[], uint8_t len);
 		static constexpr uint8_t  TMC2208_SYNC = 0x05,
 															TMC2208_SLAVE_ADDR = 0x00;
 		const bool write_only;
 		static constexpr uint8_t replyDelay = 2;
-		static constexpr uint8_t abort_window = 5;
+		static constexpr uint8_t abort_window = 1;
 		static constexpr uint8_t max_retries = 2;
 
 		template<typename SERIAL_TYPE>
